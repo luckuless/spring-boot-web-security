@@ -1,0 +1,278 @@
+openapi: 3.0.2
+info:
+  title: Customer API
+  contact:
+    name: Luckuless Rambojun
+    email: luckuless.rambojun@icloud.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1-SNAPSHOT
+externalDocs:
+  description: Find out more about Openapi and Keycloak
+  url: https://reflectoring.io/about/
+servers:
+  - url: https://development.gigantic-server.com/v1
+tags:
+  - name: Car
+    description: Operations about cars
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+paths:
+  /cars:
+    get:
+      tags:
+        - user
+      summary: retrieve all cars
+      operationId: getCars
+      parameters:
+        - name: page
+          in: query
+          required: true
+          description: the page to fetch from DB
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: limit
+          in: query
+          required: true
+          description: the number of cars per page
+          schema:
+            type: integer
+            format: int32
+            default: 0
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+        404:
+          description: Car not found
+          content: { }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        502:
+          description: Gateway Timeout Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    post:
+      tags:
+        - user
+      summary: Add a new Car
+      operationId: createCar
+      requestBody:
+        description: Created a new car
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Car'
+        required: true
+
+      responses:
+        201:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        502:
+          description: Gateway Timeout Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      x-codegen-request-body-name: body
+
+  /cars/{model}:
+    get:
+      tags:
+        - user
+      summary: retrieve a model
+      operationId: getCarByModel
+      parameters:
+        - name: model
+          in: path
+          required: true
+          description: retrieve a model
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        404:
+          description: Car not found
+          content: { }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        502:
+          description: Gateway Timeout Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    put:
+      tags:
+        - user
+      summary: Update a model
+      operationId: updateCar
+      parameters:
+        - name: model
+          in: path
+          required: true
+          description: update a model
+          schema:
+            type: string
+      requestBody:
+        description: Updated Car
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Car'
+        required: true
+
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+        404:
+          description: Car not found
+          content: { }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        502:
+          description: Gateway Timeout Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+    delete:
+      tags:
+        - user
+      summary: delete a model
+      operationId: deleteCar
+      parameters:
+        - name: model
+          in: path
+          required: true
+          description: delete a model
+          schema:
+            type: string
+      responses:
+        204:
+          description: Successful operation
+          content: { }
+        404:
+          description: Invalid model supplied
+          content: { }
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Errors'
+        502:
+          description: Gateway Timeout Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+components:
+  schemas:
+    Car:
+      type: object
+      properties:
+        body:
+          type: string
+          enum:
+            - SUV
+            - SEDAN
+            - 4x4
+            - HATCHBACK
+        model:
+          type: string
+        ev:
+          type: boolean
+        displacement:
+          type: integer
+          format: int32
+          minimum: 100
+        mileage:
+          type: integer
+        emission:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 2000
+        keyFeatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyFeature'
+    KeyFeature:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    ErrorMessage:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: String
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/ErrorMessage'
+    SuccessMessage:
+      type: object
+      properties:
+        code:
+          type: string
+          description: string
