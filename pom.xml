@@ -18,6 +18,7 @@
 
 	<modules>
 		<module>webapp</module>
+		<module>security</module>
 		<module>specification</module>
 	</modules>
 
