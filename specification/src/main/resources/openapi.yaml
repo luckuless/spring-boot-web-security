@@ -231,7 +231,11 @@ components:
             - SEDAN
             - 4x4
             - HATCHBACK
+        brand:
+          type: string
         model:
+          type: string
+        derivative:
           type: string
         ev:
           type: boolean
@@ -239,8 +243,6 @@ components:
           type: integer
           format: int32
           minimum: 100
-        mileage:
-          type: integer
         emission:
           type: number
           format: double
